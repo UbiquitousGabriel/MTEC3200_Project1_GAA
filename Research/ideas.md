@@ -10,8 +10,13 @@ Solutions (Brainstorming):
 5) Freethinkers group dating. Find a friend group that wants to go to your type of religious place together. 
 6) Practice slowing down app. App that makes you focus on it and not the other stuff in life. Slow down and breathe.
 7) App that tracks your emotions? Makes suggestions based on what you value?
-8) Make a website where you can scroll through UU texts with ease? Like a library site that is open source and kinda uu focused. Automatically narrates.
+8) Make a website where you can scroll through UU texts with ease? Like a library site that is open source and kinda uu focused. Automatically narrates. (YES)
 9) Inform you of various community days.
 
 
 HMW: How might we support young Unitarian Universalists people in finding alternative solutions to traditional religious practices.
+
+Select and Commit:
+8) Make a website where you can scroll through UU texts with ease? Like a library site that is open source and kinda uu focused. Automatically narrates. (YES)
+
+A web-based library of open-source UU-approved texts that allow you to read and practice the religion while not in your community gathering place.
