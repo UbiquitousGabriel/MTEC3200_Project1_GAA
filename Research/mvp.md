@@ -3,13 +3,14 @@ MVP Template
 Fill in each section:
 . Core problem: The user does not know the readings that are recognized by the Unitarian Universalist Association. This tool gives them access to the readings, and informs them of what is approved. 
 . Must-have features: 
-    - Clean, easy to understand interface.
+    - Clean, easy to understand interface. (Minimalist, and legible with a nice hefty font and clean pages.)
     - Ability to take notes that will be saved
     - Highlighter
     - Ability to pop out a text so you can just read that
     - Clear Categories for the readings.
     - Ability to sort through topics.
     - Ability to choose how the text that is displayed looks, i.e. font, font size, spacing.
+    - Website tools and bars should automatically be hiddent after you load into a text for reading.
 . Nice to have, but not MVP: 
   - Ability to locally save any notes as an additional pdf.
 . Out of scope for now:
