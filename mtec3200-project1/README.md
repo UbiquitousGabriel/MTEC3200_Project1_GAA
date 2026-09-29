@@ -16,6 +16,9 @@ npm run dev        # http://localhost:3000
 npm run build      # production build (pre-renders every reading)
 ```
 
+`dev` and `build` both run `scripts/build-content.mjs` first, so `content/readings/` is always regenerated from
+`data/uua-readings-raw.json` — on your machine and on Vercel.
+
 ## How it's put together
 
 ```
