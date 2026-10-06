@@ -51,3 +51,51 @@ scaffold before writing code.
 - _(fill in, in your own words — e.g. how `paintHighlights` uses character
   offsets; why reading pages are static but the home page is dynamic; where
   notes are stored and why they don't sync between devices.)_
+
+---
+
+## 2026-10-06 — Class 6: PRD and context files (Claude)
+
+**What I asked**
+> "Help me make a PRD for an MVP app I want to build with AI. Look through all
+> the files in the research folder and use the PRD-template.md to create the
+> document in the root folder of my project."
+
+Then I answered the PRD's open questions, asked Claude to check the project
+against the Class 6 Miro board, picked DaisyUI as my component library, and
+said "Do everything you can."
+
+**What came back**
+
+1. *PRD.* Claude read every research file and wrote `PRD.md` in the template's
+   sections, with "Done when" checks for each milestone and a list of open
+   questions.
+2. *My answers → changes.* Keep the "practice between Sundays" framing; no UU
+   interview; notes stay on one device; add a **daily reading** and
+   **narration with two calm voices**; re-scrape on every deploy. These became
+   Milestones 5–7 and a "Decisions made" section.
+3. *Checking the class board.* The board said a PRD also needs **user flows
+   that connect screens**, so a User flows section was added (one flow per
+   task, linked to the wireframes).
+4. *Context files.* `AGENTS.md` from the template, `PROGRESS.md`,
+   `docs/components.md`, an updated `README.md`, and skills in
+   `.github/skills/` (`build-screen` filled in for this app, plus
+   `frontend-design`, `webapp-testing`, `add-educational-comments`).
+5. *DaisyUI.* Installed with custom `chalice` / `chalice-dark` themes in my
+   colors. Problem found: the Reader already uses `data-theme="dark"` etc. for
+   its page colors, and DaisyUI uses `data-theme` for its themes too. Fix: turn
+   off DaisyUI's built-in themes and name mine differently. Before/after
+   screenshots of every page were identical.
+6. *Refactor.* App moved to the repo root, `Research/` → `docs/`, wireframe PDF
+   split into one PNG per screen.
+7. *Something that went wrong.* After the PRD was updated, the file went back
+   to its first version, probably because VS Code still had the old copy open
+   and saved over it. Lesson: close or reload a file in the editor before an AI
+   changes it.
+
+**What I changed / decided**
+- _(fill in)_
+
+**What I understood**
+- _(fill in, in your own words — e.g. what each context file is for, why
+  DaisyUI's `data-theme` clashed with the Reader, what a user flow is.)_

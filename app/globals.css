@@ -1,5 +1,80 @@
 @import "tailwindcss";
 
+/* ---------- DaisyUI (component library) ----------
+   Built-in themes are off. "chalice" and "chalice-dark" use the same colors
+   as the design tokens below, so DaisyUI components match the rest of the app.
+   Note: the Reader's own data-theme values (light / paper / sepia / dark) are
+   page colors for the reading view, not DaisyUI themes. */
+@plugin "daisyui" {
+  themes: false;
+}
+
+@plugin "daisyui/theme" {
+  name: "chalice";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+  --color-base-100: #f7f3ea;
+  --color-base-200: #fffdf8;
+  --color-base-300: #e2dccd;
+  --color-base-content: #1e1b16;
+  --color-primary: #b4462b;
+  --color-primary-content: #fffdf8;
+  --color-secondary: #6b6457;
+  --color-secondary-content: #fffdf8;
+  --color-accent: #f3dfd5;
+  --color-accent-content: #1e1b16;
+  --color-neutral: #1e1b16;
+  --color-neutral-content: #f7f3ea;
+  --color-info: #3b6ea8;
+  --color-info-content: #ffffff;
+  --color-success: #3f7d4e;
+  --color-success-content: #ffffff;
+  --color-warning: #b7791f;
+  --color-warning-content: #ffffff;
+  --color-error: #a83232;
+  --color-error-content: #ffffff;
+  --radius-selector: 2rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "chalice-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: #16140f;
+  --color-base-200: #1f1c16;
+  --color-base-300: #36322a;
+  --color-base-content: #ece6d8;
+  --color-primary: #e0835f;
+  --color-primary-content: #16140f;
+  --color-secondary: #a39b8a;
+  --color-secondary-content: #16140f;
+  --color-accent: #3a2a22;
+  --color-accent-content: #ece6d8;
+  --color-neutral: #ece6d8;
+  --color-neutral-content: #16140f;
+  --color-info: #7fb0e6;
+  --color-info-content: #16140f;
+  --color-success: #82c294;
+  --color-success-content: #16140f;
+  --color-warning: #e8b44f;
+  --color-warning-content: #16140f;
+  --color-error: #e27b7b;
+  --color-error-content: #16140f;
+  --radius-selector: 2rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
 /* ---------- Design tokens ---------- */
 :root {
   --paper: #f7f3ea;
