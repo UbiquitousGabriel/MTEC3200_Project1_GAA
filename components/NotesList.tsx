@@ -20,54 +20,61 @@ export default function NotesList({ index }: { index: Index }) {
     setEntries(list); // eslint-disable-line react-hooks/set-state-in-effect -- one-time read from localStorage
   }, [index]);
 
+  // DaisyUI: btn, card (card-dash for the empty state), badge
   return (
     <>
       <div className="pt-10 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-serif text-4xl font-bold tracking-tight">My notes</h1>
-          <p className="mt-3 text-lg text-muted">Saved in this browser only — nothing leaves your device.</p>
+          <p className="mt-3 text-lg text-base-content/70">Saved in this browser only — nothing leaves your device.</p>
         </div>
         {entries && entries.length > 0 && (
-          <button onClick={() => window.print()} className="h-11 px-5 rounded-full bg-ink text-paper font-bold no-print">
+          <button onClick={() => window.print()} className="btn btn-primary no-print">
             Save as PDF
           </button>
         )}
       </div>
 
       {entries === null ? null : entries.length === 0 ? (
-        <div className="mt-12 rounded-2xl border-2 border-dashed border-line p-10 text-center">
-          <p className="font-serif text-2xl font-bold">No notes yet.</p>
-          <p className="mt-2 text-muted">Open a reading, select some words to highlight them, or tap Notes to write.</p>
-          <Link href="/" className="mt-5 inline-flex h-11 px-5 items-center rounded-full bg-ink text-paper font-bold">
-            Find a reading
-          </Link>
+        <div className="card card-dash bg-base-200 mt-12">
+          <div className="card-body items-center text-center py-12">
+            <h2 className="card-title font-serif text-2xl">No notes yet.</h2>
+            <p className="text-base-content/70">Open a reading, select some words to highlight them, or tap Notes to write.</p>
+            <div className="card-actions mt-3">
+              <Link href="/" className="btn btn-primary">
+                Find a reading
+              </Link>
+            </div>
+          </div>
         </div>
       ) : (
-        <ul className="mt-8 space-y-6">
+        <ul className="mt-8 space-y-4">
           {entries.map(({ slug, note, highlights }) => (
-            <li key={slug} className="rounded-2xl border-2 border-line bg-surface p-5 break-inside-avoid">
-              <p className="text-sm text-muted">
-                <span className="font-bold text-accent">{index[slug].type}</span>
-                {index[slug].authors.length > 0 && <> · {index[slug].authors.join(", ")}</>}
-              </p>
-              <Link href={`/read/${slug}`} className="font-serif text-2xl font-bold hover:underline underline-offset-4">
-                {index[slug].title}
-              </Link>
-              {highlights.length > 0 && (
-                <ul className="mt-3 space-y-1.5">
-                  {[...highlights]
-                    .sort((a, b) => a.start - b.start)
-                    .map((h) => (
-                      <li key={h.id} className="font-serif leading-snug">
-                        <mark className={`hl hl-${h.color}`}>“{h.text}”</mark>
-                      </li>
-                    ))}
-                </ul>
-              )}
-              {note?.text && <p className="mt-3 whitespace-pre-wrap leading-relaxed">{note.text}</p>}
-              {note?.updatedAt && (
-                <p className="mt-3 text-sm text-muted">Edited {new Date(note.updatedAt).toLocaleDateString()}</p>
-              )}
+            <li key={slug} className="card card-border bg-base-200 break-inside-avoid">
+              <div className="card-body gap-2 p-5">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-base-content/70">
+                  <span className="badge badge-primary badge-soft font-bold">{index[slug].type}</span>
+                  {index[slug].authors.length > 0 && <span>{index[slug].authors.join(", ")}</span>}
+                </div>
+                <Link href={`/read/${slug}`} className="card-title font-serif text-2xl link link-hover">
+                  {index[slug].title}
+                </Link>
+                {highlights.length > 0 && (
+                  <ul className="mt-1 space-y-1.5">
+                    {[...highlights]
+                      .sort((a, b) => a.start - b.start)
+                      .map((h) => (
+                        <li key={h.id} className="font-serif leading-snug">
+                          <mark className={`hl hl-${h.color}`}>“{h.text}”</mark>
+                        </li>
+                      ))}
+                  </ul>
+                )}
+                {note?.text && <p className="mt-1 whitespace-pre-wrap leading-relaxed">{note.text}</p>}
+                {note?.updatedAt && (
+                  <p className="text-sm text-base-content/60">Edited {new Date(note.updatedAt).toLocaleDateString()}</p>
+                )}
+              </div>
             </li>
           ))}
         </ul>

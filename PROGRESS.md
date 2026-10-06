@@ -19,6 +19,14 @@ Milestones refer to `PRD.md`.
 
 ## Log
 
+### 2026-10-06: All screens restyled with DaisyUI
+
+- Header, Library, Topics, My notes, Reader and the 404 page now use DaisyUI components (navbar, menu, btn, input, select, card, badge, stats, join, range, textarea, list, indicator, hero…). Full list in `docs/components.md`.
+- Turned on DaisyUI depth (soft shadows) in the `chalice` themes.
+- The Reader's page colors (Paper / White / Sepia / Night) now feed DaisyUI's colors inside the Reader, so its buttons and panels match the page.
+- Fixed: search box was squashed to half height on phones.
+- Tested in light and dark mode at 1280px and 390px: search, category, topic, clear filters, show more, Surprise me, toolbar auto-hide and ⋯ handle, text settings saved, highlight, remove highlight, + Note, note autosave, My notes, Topics links, pop-out. No console errors. `npm run build` and `npm run lint` pass.
+
 ### 2026-10-06: Class 6 setup
 
 - Wrote `PRD.md` from the research and `PRD-template.md`, then added decisions, new Milestones 5–7 (daily reading, narration, fresh content) and a User flows section.

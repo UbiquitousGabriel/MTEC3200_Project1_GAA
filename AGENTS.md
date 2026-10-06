@@ -51,7 +51,7 @@ Chalice Reader is a calm, distraction-free library of the UUA's WorshipWeb readi
 - Put reusable components in `components/`.
 - Use Tailwind classes and DaisyUI component classes. No separate CSS files. Prefer Tailwind's spacing utilities over arbitrary pixel values for spacing and sizing; reserve arbitrary values for custom typography or layout geometry that has no suitable utility.
 - `app/globals.css` is the one exception: it holds the design tokens, the DaisyUI themes, and the reader's typography. Add to it only when Tailwind or DaisyUI can't do the job.
-- Use the app's color tokens (`bg-paper`, `text-ink`, `text-muted`, `border-line`, `text-accent`, `bg-accent-soft`) or the DaisyUI theme colors (`btn-primary`, `bg-base-100`…). Don't hard-code new hex colors.
+- Use DaisyUI's theme colors (`bg-base-100`, `bg-base-200`, `border-base-300`, `text-base-content/70`, `btn-primary`, `badge-primary`…). Don't hard-code new hex colors.
 - Use clear, descriptive names.
 - Put sections into their own component, so that code is easy to read from a top-level and put them inside `components/`.
 
@@ -60,8 +60,8 @@ Chalice Reader is a calm, distraction-free library of the UUA's WorshipWeb readi
 - Don't add dependencies without asking. DaisyUI is already installed and needs no extra packages.
 - Use DaisyUI components before building new ones.
 - When you use a DaisyUI component for the first time, list it in `docs/components.md`.
-- Don't restyle existing screens with DaisyUI unless asked. They work and match the wireframes.
-- The Reader uses `data-theme="light | paper | sepia | dark"` for its page colors. Those are not DaisyUI themes. Don't rename them, and don't add DaisyUI themes with those names.
+- Every screen is built with DaisyUI components. Keep new screens consistent with them (see `docs/components.md`).
+- The Reader uses `data-theme="light | paper | sepia | dark"` for its page colors. Those are not DaisyUI themes: `.reader` rules in `globals.css` feed each page color into DaisyUI's colors, so components inside the Reader match the page. Don't rename them, and don't add DaisyUI themes with those names.
 - Build one screen at a time. Match the wireframe in `docs/wireframes/`.
 - Read `PRD.md` before adding any feature. Don't add features that aren't in it.
 - Don't change working screens unless asked.

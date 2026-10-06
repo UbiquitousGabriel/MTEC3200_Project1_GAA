@@ -223,36 +223,48 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
     "--r-width": WIDTHS[settings.width],
   } as React.CSSProperties;
 
+  // DaisyUI inside the Reader picks up the page color you choose (see .reader in globals.css).
   return (
     <div className="reader min-h-screen flex-1" data-theme={settings.theme} style={style}>
-      {/* ---------- Toolbar (auto-hides) ---------- */}
+      {/* ---------- Toolbar (auto-hides) — DaisyUI: navbar, btn, indicator ---------- */}
       <div
-        className="chrome fixed inset-x-0 top-0 z-30 border-b no-print"
+        className="chrome fixed inset-x-0 top-0 z-30 border-b border-base-300 bg-base-100 no-print"
         data-hidden={toolbarHidden}
-        style={{ background: "var(--r-bg)", borderColor: "color-mix(in srgb, var(--r-ink) 12%, transparent)" }}
         onMouseEnter={showChrome}
       >
-        <div className="mx-auto max-w-5xl h-16 px-3 sm:px-6 flex items-center gap-2">
+        <div className="navbar mx-auto max-w-5xl min-h-16 px-2 sm:px-6 gap-1">
           {popout ? (
-            <button onClick={() => window.close()} className="tb-btn">
+            <button onClick={() => window.close()} className="btn btn-ghost">
               ✕ <span className="hidden sm:inline">Close</span>
             </button>
           ) : (
-            <Link href="/" className="tb-btn" aria-label="Back to library">
+            <Link href="/" className="btn btn-ghost" aria-label="Back to library">
               ← <span className="hidden sm:inline">Library</span>
             </Link>
           )}
-          <p className="flex-1 min-w-0 truncate text-center font-bold opacity-70 text-[15px]">{meta.title}</p>
-          <button className="tb-btn" aria-pressed={panel === "type"} onClick={() => setPanel(panel === "type" ? null : "type")}>
+          <p className="flex-1 min-w-0 truncate text-center font-bold text-base-content/70 text-[15px]">{meta.title}</p>
+          <button
+            className={`btn ${panel === "type" ? "btn-primary" : "btn-ghost"}`}
+            aria-pressed={panel === "type"}
+            onClick={() => setPanel(panel === "type" ? null : "type")}
+          >
             <span className="font-serif text-lg leading-none">Aa</span>
             <span className="hidden sm:inline">Text</span>
           </button>
-          <button className="tb-btn" aria-pressed={panel === "notes"} onClick={() => setPanel(panel === "notes" ? null : "notes")}>
-            ✎ <span className="hidden sm:inline">Notes</span>
-            {(note.trim() || highlights.length > 0) && <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />}
-          </button>
+          <div className="indicator">
+            {(note.trim() || highlights.length > 0) && (
+              <span className="indicator-item status status-primary" aria-label="This reading has notes or highlights" />
+            )}
+            <button
+              className={`btn ${panel === "notes" ? "btn-primary" : "btn-ghost"}`}
+              aria-pressed={panel === "notes"}
+              onClick={() => setPanel(panel === "notes" ? null : "notes")}
+            >
+              ✎ <span className="hidden sm:inline">Notes</span>
+            </button>
+          </div>
           {!popout && (
-            <button className="tb-btn" onClick={openPopout} title="Open this reading in its own window">
+            <button className="btn btn-ghost" onClick={openPopout} title="Open this reading in its own window">
               ⧉ <span className="hidden sm:inline">Pop out</span>
             </button>
           )}
@@ -263,8 +275,7 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
       {toolbarHidden && (
         <button
           onClick={showChrome}
-          className="fixed bottom-5 right-5 z-30 h-12 w-12 rounded-full shadow-lg text-xl no-print"
-          style={{ background: "var(--r-ink)", color: "var(--r-bg)" }}
+          className="btn btn-circle btn-lg btn-neutral fixed bottom-5 right-5 z-30 shadow-lg text-xl no-print"
           aria-label="Show reading tools"
         >
           ⋯
@@ -274,12 +285,10 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
       {/* ---------- The reading ---------- */}
       <main className="px-5 sm:px-8 pt-28 pb-24">
         <header className="reading-col mb-10">
-          <p className="font-sans text-[15px] font-bold uppercase tracking-wider" style={{ color: "var(--accent)" }}>
-            {meta.type}
-          </p>
-          <h1 className="mt-2 text-[1.9em] leading-[1.15] font-bold tracking-tight">{meta.title}</h1>
+          <span className="badge badge-primary badge-soft font-sans font-bold uppercase tracking-wider">{meta.type}</span>
+          <h1 className="mt-3 text-[1.9em] leading-[1.15] font-bold tracking-tight">{meta.title}</h1>
           {meta.authors.length > 0 && <p className="mt-3 font-sans text-[0.8em] font-bold">by {meta.authors.join(", ")}</p>}
-          <p className="mt-1 font-sans text-[0.7em]" style={{ color: "var(--r-muted)" }}>
+          <p className="mt-1 font-sans text-[0.7em] text-base-content/60">
             {[meta.date, meta.source && `From ${meta.source}`].filter(Boolean).join(" · ")}
           </p>
         </header>
@@ -294,24 +303,20 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
           dangerouslySetInnerHTML={{ __html: html }}
         />
 
-        <footer className="reading-col mt-14 pt-6 border-t font-sans text-[15px] no-print" style={{ borderColor: "color-mix(in srgb, var(--r-ink) 15%, transparent)" }}>
+        <footer className="reading-col mt-14 font-sans text-[15px] no-print">
+          <div className="divider" />
           {meta.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {meta.tags.map((t) => (
-                <Link
-                  key={t}
-                  href={`/?topic=${encodeURIComponent(t)}`}
-                  className="px-3 py-1 rounded-full border font-bold hover:opacity-70"
-                  style={{ borderColor: "color-mix(in srgb, var(--r-ink) 25%, transparent)" }}
-                >
+                <Link key={t} href={`/?topic=${encodeURIComponent(t)}`} className="badge badge-lg badge-outline font-bold hover:badge-primary">
                   {t}
                 </Link>
               ))}
             </div>
           )}
-          <p className="mt-6" style={{ color: "var(--r-muted)" }}>
+          <p className="mt-6 text-base-content/60">
             © the author. Shared from the UUA WorshipWeb library —{" "}
-            <a href={meta.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 font-bold" style={{ color: "var(--r-ink)" }}>
+            <a href={meta.url} target="_blank" rel="noopener noreferrer" className="link font-bold text-base-content">
               read the original on UUA.org ↗
             </a>
           </p>
@@ -322,17 +327,24 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
       {selPop && (
         <Popover x={selPop.x} y={selPop.y}>
           {COLORS.map((c) => (
-            <button key={c} onMouseDown={(e) => e.preventDefault()} onClick={() => addHighlight(c)} className="h-8 w-8 rounded-full border-2 border-white/70" style={{ background: SWATCH[c] }} aria-label={`Highlight ${c}`} />
+            <button
+              key={c}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => addHighlight(c)}
+              className="btn btn-circle btn-sm border-2 border-white/70"
+              style={{ background: SWATCH[c] }}
+              aria-label={`Highlight ${c}`}
+            />
           ))}
           <span className="w-px h-6 bg-white/30 mx-1" />
-          <button onMouseDown={(e) => e.preventDefault()} onClick={quoteToNote} className="px-2 h-8 font-bold text-sm">
+          <button onMouseDown={(e) => e.preventDefault()} onClick={quoteToNote} className="btn btn-sm btn-ghost text-white">
             + Note
           </button>
         </Popover>
       )}
       {markPop && (
         <Popover x={markPop.x} y={markPop.y}>
-          <button onClick={() => removeHighlight(markPop.id)} className="px-3 h-8 font-bold text-sm">
+          <button onClick={() => removeHighlight(markPop.id)} className="btn btn-sm btn-ghost text-white">
             Remove highlight
           </button>
         </Popover>
@@ -341,25 +353,24 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
       {/* ---------- Side panels ---------- */}
       {panel && (
         <aside
-          className="fixed z-40 top-16 right-0 bottom-0 w-full sm:w-[24rem] border-l overflow-y-auto font-sans no-print shadow-2xl"
-          style={{ background: "var(--r-bg)", borderColor: "color-mix(in srgb, var(--r-ink) 15%, transparent)" }}
+          className="fixed z-40 top-16 right-0 bottom-0 w-full sm:w-[24rem] border-l border-base-300 bg-base-100 overflow-y-auto font-sans no-print shadow-2xl"
           aria-label={panel === "type" ? "Text settings" : "Notes"}
         >
           <div className="p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold">{panel === "type" ? "Text settings" : "Notes & highlights"}</h2>
-              <button onClick={() => setPanel(null)} className="tb-btn" aria-label="Close panel">
+              <button onClick={() => setPanel(null)} className="btn btn-ghost btn-circle btn-sm" aria-label="Close panel">
                 ✕
               </button>
             </div>
 
             {panel === "type" ? (
-              <div className="space-y-6">
+              <div className="space-y-5">
                 <Field label="Font">
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="join w-full">
                     {(Object.keys(FONTS) as ReaderSettings["font"][]).map((f) => (
-                      <Option key={f} active={settings.font === f} onClick={() => updateSettings({ font: f })}>
-                        <span style={{ fontFamily: FONTS[f].css }} className="text-xl block">Aa</span>
+                      <Option key={f} join active={settings.font === f} onClick={() => updateSettings({ font: f })}>
+                        <span style={{ fontFamily: FONTS[f].css }} className="text-xl">Aa</span>
                         <span className="text-xs">{FONTS[f].label}</span>
                       </Option>
                     ))}
@@ -367,24 +378,24 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
                 </Field>
                 <Field label={`Size · ${settings.size}px`}>
                   <div className="flex items-center gap-3">
-                    <button className="tb-btn" onClick={() => updateSettings({ size: Math.max(14, settings.size - 1) })} aria-label="Smaller text">A−</button>
-                    <input type="range" min={14} max={34} value={settings.size} onChange={(e) => updateSettings({ size: Number(e.target.value) })} className="flex-1 accent-[var(--accent)]" aria-label="Text size" />
-                    <button className="tb-btn" onClick={() => updateSettings({ size: Math.min(34, settings.size + 1) })} aria-label="Larger text">A+</button>
+                    <button className="btn btn-sm btn-square btn-soft" onClick={() => updateSettings({ size: Math.max(14, settings.size - 1) })} aria-label="Smaller text">A−</button>
+                    <input type="range" min={14} max={34} value={settings.size} onChange={(e) => updateSettings({ size: Number(e.target.value) })} className="range range-primary range-sm flex-1" aria-label="Text size" />
+                    <button className="btn btn-sm btn-square btn-soft" onClick={() => updateSettings({ size: Math.min(34, settings.size + 1) })} aria-label="Larger text">A+</button>
                   </div>
                 </Field>
                 <Field label="Line spacing">
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="join w-full">
                     {SPACING.map((s) => (
-                      <Option key={s.label} active={settings.lineHeight === s.value} onClick={() => updateSettings({ lineHeight: s.value })}>
+                      <Option key={s.label} join active={settings.lineHeight === s.value} onClick={() => updateSettings({ lineHeight: s.value })}>
                         {s.label}
                       </Option>
                     ))}
                   </div>
                 </Field>
                 <Field label="Line width">
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="join w-full">
                     {(Object.keys(WIDTHS) as ReaderSettings["width"][]).map((w) => (
-                      <Option key={w} active={settings.width === w} onClick={() => updateSettings({ width: w })}>
+                      <Option key={w} join active={settings.width === w} onClick={() => updateSettings({ width: w })}>
                         <span className="capitalize">{w}</span>
                       </Option>
                     ))}
@@ -394,22 +405,20 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
                   <div className="grid grid-cols-4 gap-2">
                     {THEMES.map((t) => (
                       <Option key={t.id} active={settings.theme === t.id} onClick={() => updateSettings({ theme: t.id })}>
-                        <span className="block mx-auto h-7 w-7 rounded-full border" style={{ background: t.swatch, borderColor: t.ink }} />
+                        <span className="block h-7 w-7 rounded-full border" style={{ background: t.swatch, borderColor: t.ink }} />
                         <span className="text-xs">{t.label}</span>
                       </Option>
                     ))}
                   </div>
                 </Field>
-                <button onClick={() => updateSettings(DEFAULT_SETTINGS)} className="underline underline-offset-4 font-bold">
+                <button onClick={() => updateSettings(DEFAULT_SETTINGS)} className="btn btn-link px-0">
                   Reset to default
                 </button>
               </div>
             ) : (
-              <div className="space-y-6">
-                <div>
-                  <label htmlFor="note" className="text-sm font-bold uppercase tracking-wider opacity-70">
-                    Your note
-                  </label>
+              <div className="space-y-5">
+                <fieldset className="fieldset p-0">
+                  <legend className="fieldset-legend pt-0 text-sm uppercase tracking-wider">Your note</legend>
                   <textarea
                     id="note"
                     value={note}
@@ -419,32 +428,42 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
                     }}
                     rows={10}
                     placeholder="What stayed with you? A question, a memory, a line to carry into the week…"
-                    className="mt-2 w-full rounded-xl border-2 p-3 text-base leading-relaxed bg-transparent focus:outline-none focus:border-[var(--accent)]"
-                    style={{ borderColor: "color-mix(in srgb, var(--r-ink) 20%, transparent)", color: "var(--r-ink)" }}
+                    className="textarea w-full text-base leading-relaxed"
+                    aria-label="Your note"
                   />
-                  <p className="mt-1 text-sm opacity-70" aria-live="polite">
-                    {saved === "saving" ? "Saving…" : saved === "saved" ? "Saved on this device ✓" : "Notes save automatically on this device."}
+                  <p className="label text-sm" aria-live="polite">
+                    {saved === "saving" ? (
+                      <>
+                        <span className="loading loading-dots loading-xs" /> Saving…
+                      </>
+                    ) : saved === "saved" ? (
+                      <span className="text-success font-bold">Saved on this device ✓</span>
+                    ) : (
+                      "Notes save automatically on this device."
+                    )}
                   </p>
-                </div>
+                </fieldset>
 
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-wider opacity-70">Highlights ({highlights.length})</h3>
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-base-content/70">
+                    Highlights <span className="badge badge-sm badge-ghost">{highlights.length}</span>
+                  </h3>
                   {highlights.length === 0 ? (
-                    <p className="mt-2 opacity-70 leading-relaxed">Select any words in the reading to highlight them.</p>
+                    <p className="mt-2 text-base-content/70 leading-relaxed">Select any words in the reading to highlight them.</p>
                   ) : (
-                    <ul className="mt-2 space-y-2">
+                    <ul className="list mt-2 rounded-box bg-base-200">
                       {[...highlights]
                         .sort((a, b) => a.start - b.start)
                         .map((h) => (
-                          <li key={h.id} className="flex gap-2 items-start">
+                          <li key={h.id} className="list-row items-start p-3">
                             <span className={`mt-1.5 h-3 w-3 shrink-0 rounded-full hl hl-${h.color}`} />
                             <button
-                              className="flex-1 text-left font-serif leading-snug hover:underline"
+                              className="text-left font-serif leading-snug hover:underline"
                               onClick={() => document.querySelector(`mark[data-hl="${h.id}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" })}
                             >
                               “{h.text}”
                             </button>
-                            <button onClick={() => removeHighlight(h.id)} className="opacity-60 hover:opacity-100 px-1" aria-label="Remove highlight">
+                            <button onClick={() => removeHighlight(h.id)} className="btn btn-ghost btn-xs btn-square" aria-label="Remove highlight">
                               ✕
                             </button>
                           </li>
@@ -453,11 +472,11 @@ export default function Reader({ meta, html }: { meta: ReadingMeta; html: string
                   )}
                 </div>
 
-                <div className="flex flex-wrap gap-3">
-                  <button onClick={exportNote} className="h-10 px-4 rounded-full font-bold" style={{ background: "var(--r-ink)", color: "var(--r-bg)" }}>
+                <div className="flex flex-wrap gap-2">
+                  <button onClick={exportNote} className="btn btn-primary btn-sm">
                     Download as Markdown
                   </button>
-                  <Link href="/notes" className="h-10 px-4 inline-flex items-center rounded-full border-2 font-bold" style={{ borderColor: "var(--r-ink)" }}>
+                  <Link href="/notes" className="btn btn-outline btn-sm">
                     All my notes
                   </Link>
                 </div>
@@ -486,25 +505,33 @@ function Popover({ x, y, children }: { x: number; y: number; children: React.Rea
   );
 }
 
+// DaisyUI: fieldset + fieldset-legend
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <p className="text-sm font-bold uppercase tracking-wider opacity-70 mb-2">{label}</p>
+    <fieldset className="fieldset p-0">
+      <legend className="fieldset-legend pt-0 text-sm uppercase tracking-wider">{label}</legend>
       {children}
-    </div>
+    </fieldset>
   );
 }
 
-function Option({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+// DaisyUI: btn (+ join-item when inside a join). Selected = btn-primary.
+function Option({
+  active,
+  onClick,
+  join = false,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  join?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <button
       onClick={onClick}
       aria-pressed={active}
-      className="min-h-11 rounded-xl border-2 px-2 py-2 font-bold text-center"
-      style={{
-        borderColor: active ? "var(--accent)" : "color-mix(in srgb, var(--r-ink) 18%, transparent)",
-        background: active ? "color-mix(in srgb, var(--accent) 12%, transparent)" : "transparent",
-      }}
+      className={`btn h-auto min-h-11 py-2 flex-col gap-0.5 ${join ? "join-item flex-1" : ""} ${active ? "btn-primary" : "btn-soft"}`}
     >
       {children}
     </button>

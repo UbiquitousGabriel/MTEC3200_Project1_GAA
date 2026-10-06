@@ -79,21 +79,24 @@ export default function Library({
     <div className="mx-auto max-w-5xl px-4 sm:px-6 pb-16">
       {/* Intro */}
       <section className="pt-10 sm:pt-14 pb-8">
-        <h1 className="font-serif text-4xl sm:text-5xl font-bold leading-tight tracking-tight max-w-2xl">
+        <div className="badge badge-primary badge-soft font-bold">
+          UUA WorshipWeb library
+        </div>
+        <h1 className="mt-4 font-serif text-4xl sm:text-5xl font-bold leading-tight tracking-tight max-w-2xl">
           Words for the days between Sundays.
         </h1>
-        <p className="mt-4 text-lg text-muted max-w-2xl leading-relaxed">
+        <p className="mt-4 text-lg text-base-content/70 max-w-2xl leading-relaxed">
           {items.length.toLocaleString()} readings, poems, prayers and reflections from the Unitarian
           Universalist Association&rsquo;s WorshipWeb library — in one quiet place to read, highlight, and
           take notes.
         </p>
       </section>
 
-      {/* Search */}
+      {/* Search — DaisyUI: input (with icon) + btn */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <label className="relative flex-1">
+        <label className="input input-lg w-full sm:flex-1">
           <span className="sr-only">Search readings</span>
-          <svg viewBox="0 0 24 24" className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted" aria-hidden="true">
+          <svg viewBox="0 0 24 24" className="h-5 w-5 opacity-60" aria-hidden="true">
             <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" />
             <path d="M20 20l-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
@@ -102,94 +105,105 @@ export default function Library({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search by title, author, or idea — “hope”, “Mary Oliver”, “grief”…"
-            className="w-full h-14 pl-12 pr-4 rounded-2xl bg-surface border-2 border-line text-lg placeholder:text-muted/80 focus:border-accent focus:outline-none"
+            className="grow"
           />
         </label>
-        <button
-          onClick={surprise}
-          className="h-14 px-5 rounded-2xl border-2 border-ink font-bold text-lg hover:bg-ink hover:text-paper transition-colors"
-        >
+        <button onClick={surprise} className="btn btn-lg btn-primary">
           Surprise me
         </button>
       </div>
 
-      {/* Categories */}
-      <div className="mt-6">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-muted mb-2">Category</h2>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
-          <Chip active={!type} onClick={() => setType("")}>
-            All
-          </Chip>
-          {types.map((t) => (
-            <Chip key={t.name} active={type === t.name} onClick={() => setType(type === t.name ? "" : t.name)}>
-              {t.name} <span className="opacity-60 font-normal">{t.count}</span>
-            </Chip>
-          ))}
+      {/* Filters — DaisyUI: card, fieldset, btn, badge, select */}
+      <div className="card card-border bg-base-200 mt-6">
+        <div className="card-body gap-4 p-4 sm:p-5">
+          <fieldset className="fieldset p-0">
+            <legend className="fieldset-legend pt-0 text-sm uppercase tracking-wider">Category</legend>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+              <Chip active={!type} onClick={() => setType("")}>
+                All
+              </Chip>
+              {types.map((t) => (
+                <Chip key={t.name} active={type === t.name} onClick={() => setType(type === t.name ? "" : t.name)}>
+                  {t.name}
+                  <span className={`badge badge-sm ${type === t.name ? "badge-neutral" : "badge-ghost"}`}>{t.count}</span>
+                </Chip>
+              ))}
+            </div>
+          </fieldset>
+
+          <div className="flex flex-wrap items-end gap-3">
+            <fieldset className="fieldset p-0">
+              <legend className="fieldset-legend pt-0 text-sm uppercase tracking-wider">Topic</legend>
+              <select
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                className="select min-w-64 max-w-full"
+                aria-label="Filter by topic"
+              >
+                <option value="">All topics</option>
+                {topics.map((t) => (
+                  <option key={t.name} value={t.name}>
+                    {t.name} ({t.count})
+                  </option>
+                ))}
+              </select>
+            </fieldset>
+            <Link href="/topics" className="btn btn-ghost text-primary">
+              Browse all topics →
+            </Link>
+          </div>
         </div>
       </div>
 
-      {/* Topic */}
-      <div className="mt-5 flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-bold uppercase tracking-wider text-muted">Topic</span>
-          <select
-            value={topic}
-            onChange={(e) => setTopic(e.target.value)}
-            className="h-11 min-w-64 max-w-full rounded-xl bg-surface border-2 border-line px-3 text-base focus:border-accent focus:outline-none"
-          >
-            <option value="">All topics</option>
-            {topics.map((t) => (
-              <option key={t.name} value={t.name}>
-                {t.name} ({t.count})
-              </option>
-            ))}
-          </select>
-        </label>
-        <Link href="/topics" className="h-11 inline-flex items-center text-accent font-bold underline underline-offset-4">
-          Browse all topics
-        </Link>
-      </div>
-
       {/* Results */}
-      <div className="mt-8 flex items-baseline justify-between gap-4 border-b border-line pb-3">
-        <p className="text-muted" aria-live="polite">
-          <strong className="text-ink">{results.length.toLocaleString()}</strong>{" "}
+      <div className="mt-8 mb-4 flex items-center justify-between gap-4">
+        <p className="text-base-content/70" aria-live="polite">
+          <strong className="text-base-content">{results.length.toLocaleString()}</strong>{" "}
           {results.length === 1 ? "reading" : "readings"}
           {topic && (
             <>
               {" "}
-              on <strong className="text-ink">{topic}</strong>
+              on <span className="badge badge-primary badge-soft font-bold">{topic}</span>
             </>
           )}
         </p>
         {filtered && (
-          <button onClick={clear} className="text-accent font-bold underline underline-offset-4">
-            Clear filters
+          <button onClick={clear} className="btn btn-sm btn-ghost text-primary">
+            ✕ Clear filters
           </button>
         )}
       </div>
 
       {results.length === 0 ? (
-        <div className="py-16 text-center">
-          <p className="font-serif text-2xl font-bold">Nothing matches that yet.</p>
-          <p className="mt-2 text-muted">Try fewer words, or clear a filter.</p>
-          <button onClick={clear} className="mt-5 h-11 px-5 rounded-full bg-ink text-paper font-bold">
-            Clear filters
-          </button>
+        <div className="card card-dash bg-base-200">
+          <div className="card-body items-center text-center py-14">
+            <h2 className="card-title font-serif text-2xl">Nothing matches that yet.</h2>
+            <p className="text-base-content/70">Try fewer words, or clear a filter.</p>
+            <div className="card-actions mt-3">
+              <button onClick={clear} className="btn btn-neutral">
+                Clear filters
+              </button>
+            </div>
+          </div>
         </div>
       ) : (
-        <ul className="divide-y divide-line">
+        <ul className="grid gap-3">
           {results.slice(0, shown).map((it) => (
             <li key={it.slug}>
-              <Link href={`/read/${it.slug}`} className="group block py-5 -mx-3 px-3 rounded-xl hover:bg-surface">
-                <p className="text-sm text-muted">
-                  <span className="font-bold text-accent">{it.type}</span>
-                  {it.authors.length > 0 && <> · {it.authors.join(", ")}</>}
-                </p>
-                <h3 className="mt-1 font-serif text-2xl font-bold leading-snug group-hover:underline underline-offset-4 decoration-2">
-                  {it.title}
-                </h3>
-                {it.summary && <p className="mt-1.5 text-[17px] text-muted leading-relaxed line-clamp-2">{it.summary}</p>}
+              <Link
+                href={`/read/${it.slug}`}
+                className="card card-border bg-base-100 hover:bg-base-200 hover:border-primary/50 transition-colors group"
+              >
+                <div className="card-body gap-1 p-4 sm:p-5">
+                  <div className="flex flex-wrap items-center gap-2 text-sm text-base-content/70">
+                    <span className="badge badge-primary badge-soft font-bold">{it.type}</span>
+                    {it.authors.length > 0 && <span>{it.authors.join(", ")}</span>}
+                  </div>
+                  <h3 className="card-title font-serif text-2xl leading-snug group-hover:underline underline-offset-4 decoration-2">
+                    {it.title}
+                  </h3>
+                  {it.summary && <p className="text-[17px] text-base-content/70 leading-relaxed line-clamp-2">{it.summary}</p>}
+                </div>
               </Link>
             </li>
           ))}
@@ -198,10 +212,7 @@ export default function Library({
 
       {shown < results.length && (
         <div className="mt-6 text-center">
-          <button
-            onClick={showMore}
-            className="h-12 px-6 rounded-full border-2 border-line bg-surface font-bold hover:border-ink"
-          >
+          <button onClick={showMore} className="btn btn-outline btn-wide">
             Show more ({(results.length - shown).toLocaleString()} left)
           </button>
         </div>
@@ -210,14 +221,13 @@ export default function Library({
   );
 }
 
+// DaisyUI: btn (btn-neutral when selected, btn-outline otherwise)
 function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
     <button
       onClick={onClick}
       aria-pressed={active}
-      className={`h-10 px-4 rounded-full border-2 font-bold text-[15px] transition-colors ${
-        active ? "bg-ink border-ink text-paper" : "bg-surface border-line text-ink hover:border-ink"
-      }`}
+      className={`btn btn-sm rounded-full ${active ? "btn-neutral" : "btn-outline border-base-300 bg-base-100"}`}
     >
       {children}
     </button>

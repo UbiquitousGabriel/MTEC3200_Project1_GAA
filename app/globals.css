@@ -38,7 +38,7 @@
   --radius-field: 0.75rem;
   --radius-box: 1rem;
   --border: 1px;
-  --depth: 0;
+  --depth: 1;
   --noise: 0;
 }
 
@@ -71,7 +71,7 @@
   --radius-field: 0.75rem;
   --radius-box: 1rem;
   --border: 1px;
-  --depth: 0;
+  --depth: 1;
   --noise: 0;
 }
 
@@ -150,6 +150,34 @@ body {
 .reader[data-theme="sepia"] { --r-bg: #efe2c6; --r-ink: #3b2d1b; --r-muted: #7a6547; }
 .reader[data-theme="dark"]  { --r-bg: #121110; --r-ink: #e8e2d4; --r-muted: #9a927f; }
 
+/* The Reader's page colors drive DaisyUI's colors inside the Reader, so its
+   buttons, badges and panels always match the page you picked — even when the
+   rest of the site is in light or dark mode. */
+.reader {
+  --color-base-100: var(--r-bg);
+  --color-base-200: color-mix(in oklab, var(--r-ink) 6%, var(--r-bg));
+  --color-base-300: color-mix(in oklab, var(--r-ink) 15%, var(--r-bg));
+  --color-base-content: var(--r-ink);
+}
+.reader[data-theme="light"],
+.reader[data-theme="paper"],
+.reader[data-theme="sepia"] {
+  color-scheme: light;
+  --color-primary: #b4462b;
+  --color-primary-content: #fffdf8;
+  --color-neutral: #1e1b16;
+  --color-neutral-content: #f7f3ea;
+  --color-success: #3f7d4e;
+}
+.reader[data-theme="dark"] {
+  color-scheme: dark;
+  --color-primary: #e0835f;
+  --color-primary-content: #16140f;
+  --color-neutral: #e8e2d4;
+  --color-neutral-content: #121110;
+  --color-success: #82c294;
+}
+
 .reading-col {
   font-family: var(--r-font);
   font-size: var(--r-size);
@@ -168,7 +196,7 @@ body {
 .reading-body h2 { font-size: 1.25em; }
 .reading-body h3 { font-size: 1.1em; }
 .reading-body blockquote {
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--color-primary);
   padding-left: 1em;
   margin: 1.2em 0;
   font-style: italic;
@@ -176,10 +204,10 @@ body {
 .reading-body ul, .reading-body ol { margin: 0 0 1em 1.4em; }
 .reading-body ul { list-style: disc; }
 .reading-body ol { list-style: decimal; }
-.reading-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.reading-body a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 3px; }
 .reading-body strong { font-weight: 700; }
 .reading-body em { font-style: italic; }
-.reading-body hr { border: 0; border-top: 1px solid var(--line); margin: 2em 0; }
+.reading-body hr { border: 0; border-top: 1px solid var(--color-base-300); margin: 2em 0; }
 
 /* Highlights */
 mark.hl { color: inherit; border-radius: 3px; padding: 0.05em 0; cursor: pointer; }
@@ -202,21 +230,4 @@ mark.hl { color: inherit; border-radius: 3px; padding: 0.05em 0; cursor: pointer
 @media print {
   .no-print { display: none !important; }
   body { background: #fff; color: #000; }
-}
-
-/* Toolbar buttons in the reader */
-.tb-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  height: 2.5rem;
-  padding: 0 0.8rem;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 15px;
-  white-space: nowrap;
-}
-.tb-btn:hover,
-.tb-btn[aria-pressed="true"] {
-  background: color-mix(in srgb, var(--r-ink, var(--ink)) 10%, transparent);
 }
