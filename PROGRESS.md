@@ -19,6 +19,10 @@ Milestones refer to `PRD.md`.
 
 ## Log
 
+### 2026-10-20: Project reflection
+
+- Added `reflection.md` at the repo root: how I built it, three AI examples, problems I hit, and improvements for the future.
+
 ### 2026-10-06: All screens restyled with DaisyUI
 
 - Header, Library, Topics, My notes, Reader and the 404 page now use DaisyUI components (navbar, menu, btn, input, select, card, badge, stats, join, range, textarea, list, indicator, hero…). Full list in `docs/components.md`.
