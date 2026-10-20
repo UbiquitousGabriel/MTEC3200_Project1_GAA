@@ -1,0 +1,413 @@
+<title>Chalice Reader Word Atlas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one candlelit column; a word-cloud centerpiece, then a run of small, playful panels on a two-column grid that stacks on phones. */
+:root{
+  --bg:#F6F3FA; --panel:#FFFFFF; --ink:#231B33; --ink-2:#5A5070; --ink-3:#8A819C; --rule:#E3DDEC;
+  --flame:#C76E0A; --flame-text:#A85A05; --violet:#5B4BD6; --flame-soft:#F7E4CC; --violet-soft:#E4E0FA;
+  --display:"Young Serif",Georgia,"Times New Roman",serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1A1422; --panel:#231C2E; --ink:#F1ECF7; --ink-2:#C2B8D2; --ink-3:#8F84A3; --rule:#382E47;
+  --flame:#C2741A; --flame-text:#F2A33A; --violet:#7F70EC; --flame-soft:#3A2A1C; --violet-soft:#2C2650; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1A1422; --panel:#231C2E; --ink:#F1ECF7; --ink-2:#C2B8D2; --ink-3:#8F84A3; --rule:#382E47;
+  --flame:#C2741A; --flame-text:#F2A33A; --violet:#7F70EC; --flame-soft:#3A2A1C; --violet-soft:#2C2650; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;line-height:1.1}
+h2{font-size:clamp(1.5rem,3.2vw,2rem)}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* hero */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+.flame-wrap{width:72px;height:110px;position:relative}
+.flame{position:absolute;left:50%;bottom:34px;width:34px;height:56px;transform:translateX(-50%);border-radius:50% 50% 50% 50%/62% 62% 38% 38%;
+  background:radial-gradient(ellipse at 50% 75%,#FFF3C4 0%,#F7B640 35%,var(--flame) 70%,transparent 72%);animation:flick 2.6s ease-in-out infinite;transform-origin:50% 100%}
+.cup{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:64px;height:34px;border-radius:0 0 32px 32px;background:var(--violet)}
+.cup::after{content:"";position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);width:30px;height:6px;border-radius:3px;background:var(--violet)}
+@keyframes flick{0%,100%{transform:translateX(-50%) scale(1,1) rotate(-1deg)}30%{transform:translateX(-50%) scale(.94,1.06) rotate(2deg)}60%{transform:translateX(-50%) scale(1.04,.96) rotate(-2deg)}}
+@media (prefers-reduced-motion:reduce){.flame{animation:none}}
+.hero h1{font-size:clamp(2.1rem,6vw,3.6rem)}
+.hero h1 em{font-style:normal;color:var(--flame-text)}
+.hero p.lede{color:var(--ink-2);max-width:60ch;margin-top:10px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:14px;overflow:hidden}
+.stat{background:var(--panel);padding:16px 18px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.stat b{font-family:var(--mono);font-weight:500;font-size:clamp(1.4rem,3.4vw,2rem);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat span{color:var(--ink-2);font-size:.88rem}
+
+/* panels */
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel .sub{color:var(--ink-2);font-size:.93rem;max-width:62ch}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.grid2>*{min-width:0}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+
+/* cloud */
+#cloud{width:100%;aspect-ratio:16/9;max-width:100%;position:relative}
+#cloud svg{width:100%;height:100%;display:block}
+#cloud text{cursor:default;transition:opacity .15s}
+#cloud:hover text{opacity:.35}
+#cloud text:hover{opacity:1}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,.seg label{font-family:var(--mono);font-size:.8rem;border:1px solid var(--rule);background:var(--bg);color:var(--ink);padding:7px 12px;border-radius:999px;cursor:pointer}
+button:hover,.seg label:hover{border-color:var(--flame)}
+button:focus-visible,.seg input:focus-visible+label,input[type=text]:focus-visible{outline:2px solid var(--violet);outline-offset:2px}
+.seg{display:flex;gap:4px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg input:checked+label{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.82rem;padding:7px 10px;border-radius:8px;line-height:1.35;z-index:20;opacity:0;transition:opacity .1s;max-width:240px}
+.tip b{font-family:var(--display);font-weight:400;font-size:1rem}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:5px}
+.bar{display:grid;grid-template-columns:96px 1fr 52px;gap:10px;align-items:center;font-size:.9rem;padding:1px 0;border-radius:6px}
+.bar:hover{background:var(--bg)}
+.bar .lbl{text-align:right;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .track{height:14px;position:relative}
+.bar .fill{height:100%;background:var(--flame);border-radius:0 4px 4px 0;min-width:2px}
+.bar .v{font-family:var(--mono);font-size:.78rem;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.bars.violet .fill{background:var(--violet)}
+.bars.wide .bar{grid-template-columns:150px 1fr 44px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:baseline;gap:8px;border:1px solid var(--rule);border-radius:999px;padding:6px 12px;background:var(--bg);font-size:.92rem}
+.chip i{font-style:normal;font-family:var(--mono);font-size:.74rem;color:var(--ink-3)}
+.chip.hot{background:var(--flame-soft);border-color:transparent}
+.chip.cool{background:var(--violet-soft);border-color:transparent}
+
+/* fill in the blank */
+.blank{font-family:var(--display);font-size:clamp(1.6rem,4.2vw,2.5rem);line-height:1.2;min-height:2.4em}
+.blank .slot{color:var(--flame-text);border-bottom:3px solid var(--flame);padding:0 .1em;display:inline-block;transition:opacity .2s}
+.blank .cnt{display:block;font-family:var(--mono);font-size:.8rem;color:var(--ink-3);margin-top:6px}
+
+/* duels */
+.duel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 2px;align-items:center}
+.duel .names{grid-column:1/-1;display:flex;justify-content:space-between;font-size:.95rem}
+.duel .names span:first-child{color:var(--flame-text)}
+.duel .names span:last-child{color:var(--violet)}
+.duel .names b{font-family:var(--display);font-weight:400;font-size:1.15rem;color:var(--ink)}
+.duel .rail{grid-column:1/-1;display:flex;height:16px;gap:2px}
+.duel .l{background:var(--flame);border-radius:4px 0 0 4px}
+.duel .r{background:var(--violet);border-radius:0 4px 4px 0}
+.duels{display:flex;flex-direction:column;gap:16px}
+
+/* pronoun stack */
+.stack{display:flex;height:44px;gap:2px;border-radius:8px;overflow:hidden}
+.stack div{display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--mono);font-size:.8rem;white-space:nowrap;overflow:hidden}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.88rem;color:var(--ink-2)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+
+/* types */
+.types{display:flex;flex-direction:column;gap:12px}
+.type{display:grid;grid-template-columns:150px 1fr;gap:4px 14px;align-items:center}
+.type .tn{font-weight:700;font-size:.93rem}
+.type .tn i{font-style:normal;font-family:var(--mono);font-weight:400;font-size:.76rem;color:var(--ink-3);margin-left:6px}
+.type .track{height:12px}
+.type .fill{height:100%;background:var(--violet);border-radius:0 4px 4px 0}
+.type .sig{grid-column:2;font-size:.84rem;color:var(--ink-2);font-style:italic}
+
+/* facts */
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.fact{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.fact b{font-family:var(--display);font-weight:400;font-size:1.6rem;line-height:1.1;color:var(--flame-text)}
+.fact span{font-size:.88rem;color:var(--ink-2)}
+
+/* lookup */
+.lookup{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;align-items:center}
+.lookup input{width:100%;font-family:var(--display);font-size:1.6rem;padding:10px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--bg);color:var(--ink)}
+.result{font-size:1.05rem;color:var(--ink-2)}
+.result b{font-family:var(--display);font-weight:400;font-size:2.4rem;color:var(--ink);display:block;line-height:1.1}
+.result .meter{height:10px;background:var(--bg);border-radius:5px;margin-top:12px;overflow:hidden;border:1px solid var(--rule)}
+.result .meter div{height:100%;background:var(--flame);border-radius:0 4px 4px 0}
+
+.foot{font-size:.82rem;color:var(--ink-3);max-width:80ch}
+.foot code{font-family:var(--mono);font-size:.78rem}
+
+@media (max-width:820px){
+  .grid2,.lookup{grid-template-columns:1fr}
+  .stats,.facts{grid-template-columns:1fr 1fr}
+  #cloud{aspect-ratio:4/5}
+}
+@media (max-width:460px){
+  .hero{grid-template-columns:1fr}
+  .flame-wrap{display:none}
+  .type{grid-template-columns:1fr}.type .sig{grid-column:1}
+  .bars.wide .bar{grid-template-columns:110px 1fr 40px}
+  .bar{grid-template-columns:80px 1fr 46px}
+}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="flame-wrap" aria-hidden="true"><div class="flame"></div><div class="cup"></div></div>
+    <div>
+      <div class="eyebrow">Chalice Reader · word atlas</div>
+      <h1>What <em id="heroN">1,247 readings</em> keep saying</h1>
+      <p class="lede">Every reflection, poem, litany and quote in the Chalice Reader library, run through a word counter. Common filler words like “the” and “and” are left out so the real vocabulary shows through.</p>
+    </div>
+  </header>
+
+  <section class="stats" aria-label="Library totals">
+    <div class="stat"><b id="sTotal"></b><span>words in the library</span></div>
+    <div class="stat"><b id="sUnique"></b><span>different words used</span></div>
+    <div class="stat"><b id="sAvg"></b><span>average words per reading</span></div>
+    <div class="stat"><b id="sMin"></b><span>to read one aloud, on average</span></div>
+  </section>
+
+  <section class="panel">
+    <div class="head">
+      <div><div class="eyebrow">The word cloud</div><h2>The library at a glance</h2></div>
+      <div class="controls">
+        <div class="seg" role="radiogroup" aria-label="Words shown">
+          <input type="radio" name="cn" id="cn60" value="60"><label for="cn60">60</label>
+          <input type="radio" name="cn" id="cn110" value="110" checked><label for="cn110">110</label>
+          <input type="radio" name="cn" id="cn160" value="160"><label for="cn160">160</label>
+        </div>
+        <button id="shuffle" type="button">Reshuffle</button>
+      </div>
+    </div>
+    <p class="sub">Bigger words show up more often. Hover a word for its count.</p>
+    <div id="cloud" role="img" aria-label="Word cloud of the most common words. Love, people, life, time and world are the largest."></div>
+  </section>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="eyebrow">Top 20</div>
+      <h2>The most-used words</h2>
+      <p class="sub">“Love” wins by a wide margin. It shows up in <b id="loveDocs"></b> of all readings.</p>
+      <div class="bars" id="topBars"></div>
+    </section>
+    <section class="panel">
+      <div class="eyebrow">Phrases</div>
+      <h2>Words that travel in pairs</h2>
+      <p class="sub">Counted once per reading, so a phrase repeated inside one litany doesn’t run up the score.</p>
+      <h3 style="font-size:1.05rem">Two-word phrases</h3>
+      <div class="chips" id="bigrams"></div>
+      <h3 style="font-size:1.05rem;margin-top:6px">Three-word refrains</h3>
+      <div class="chips" id="trigrams"></div>
+    </section>
+  </div>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="eyebrow">Fill in the blank</div>
+      <h2>How the library finishes a sentence</h2>
+      <div class="blank" aria-live="polite"><span id="b1pre">Spirit of</span> <span class="slot" id="b1slot">life</span><span class="cnt" id="b1cnt"></span></div>
+      <div class="controls"><button type="button" id="b1next">Next answer</button><button type="button" id="b1swap">Try “May we ___”</button></div>
+      <div class="bars violet" id="blankBars"></div>
+    </section>
+    <section class="panel">
+      <div class="eyebrow">Word duels</div>
+      <h2>Light vs. dark, and other matchups</h2>
+      <p class="sub">Each bar splits the combined mentions of two opposite words. The hopeful side wins every round.</p>
+      <div class="duels" id="duels"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="head"><div><div class="eyebrow">Point of view</div><h2>“I” or “we”?</h2></div></div>
+    <p class="sub">Almost a tie. The library speaks personally and collectively in nearly equal measure, and addresses the reader as “you” far less.</p>
+    <div class="stack" id="stack"></div>
+    <div class="legend" id="stackLegend"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="eyebrow">Reading types</div>
+      <h2>What kind of text it is</h2>
+      <p class="sub">Under each type: words that show up much more there than in the library overall.</p>
+      <div class="types" id="types"></div>
+    </section>
+    <section class="panel">
+      <div class="eyebrow">Voices and themes</div>
+      <h2>Who writes, and what about</h2>
+      <h3 style="font-size:1.05rem">Most-featured authors</h3>
+      <div class="bars violet wide" id="authors"></div>
+      <h3 style="font-size:1.05rem;margin-top:6px">Most-used tags</h3>
+      <div class="chips" id="tags"></div>
+    </section>
+  </div>
+
+  <section class="facts" aria-label="Fun facts">
+    <div class="fact"><span>Longest reading</span><b id="fLong"></b><span id="fLongSub"></span></div>
+    <div class="fact"><span>Readings that say “amen”</span><b id="fAmen"></b><span id="fAmenSub"></span></div>
+    <div class="fact"><span>Readings that use “love”</span><b id="fLove"></b><span id="fLoveSub"></span></div>
+    <div class="fact"><span>Top author</span><b id="fAuth"></b><span id="fAuthSub"></span></div>
+  </section>
+
+  <section class="panel">
+    <div class="eyebrow">Look it up</div>
+    <h2>Is your word in there?</h2>
+    <div class="lookup">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <label for="q" class="sub">Type any word</label>
+        <input id="q" type="text" value="chalice" autocomplete="off" spellcheck="false">
+        <div class="chips" id="suggest"></div>
+      </div>
+      <div class="result" id="res" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <p class="foot">Source: <code>data/uua-readings-raw.json</code> in the Chalice Reader repo, from UUA WorshipWeb and Braver/Wiser. <span id="srcN"></span> pages had readable text. Built <span id="gen"></span> by <code>npm run stats</code>. Words are lowercased; common filler words and words under three letters are skipped. Phrases are counted by how many readings contain them; a few book titles and citations are left out (listed in <code>scripts/word-stats.mjs</code>). “Signature words” must show up 10+ times in 6+ readings of that type. Reading-aloud time assumes about 150 words a minute. The lookup covers every word used at least three times.</p>
+</div>
+<div class="tip" id="tip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.7/build/d3.layout.cloud.js"></script>
+<script>
+const S = __STATS__;
+const LK = __LOOKUP__;
+const fmt = n => n.toLocaleString('en-US');
+const $ = id => document.getElementById(id);
+const pct = (a,b) => Math.round(a/b*100)+'%';
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+$('sTotal').textContent = fmt(S.total);
+$('heroN').textContent = fmt(S.n) + ' readings';
+$('srcN').textContent = fmt(S.n);
+$('gen').textContent = S.generated;
+$('sUnique').textContent = fmt(S.unique);
+$('sAvg').textContent = fmt(S.avg);
+$('sMin').textContent = '~' + Math.round(S.avg/150) + ' min';
+const loveDocs = LK.love[1];
+$('loveDocs').textContent = pct(loveDocs, S.n);
+
+/* tooltip */
+const tip = $('tip');
+function showTip(e, html){ tip.innerHTML = html; tip.style.opacity = 1; moveTip(e); }
+function moveTip(e){ const x=Math.min(e.clientX+14, innerWidth-tip.offsetWidth-8); tip.style.left=x+'px'; tip.style.top=(e.clientY+14)+'px'; }
+function hideTip(){ tip.style.opacity = 0; }
+function wordTip(w){ const r=LK[w]; return `<b>${esc(w)}</b><br>${fmt(r[0])} times · in ${fmt(r[1])} readings`; }
+
+/* word cloud */
+const cloudEl = $('cloud');
+let cloudN = 110, seed = 1;
+function rng(){ seed = (seed*16807) % 2147483647; return (seed-1)/2147483646; }
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function drawCloud(){
+  const W = cloudEl.clientWidth, H = cloudEl.clientHeight;
+  if (!W || !window.d3 || !d3.layout || !d3.layout.cloud) return;
+  const words = S.words.slice(0, cloudN);
+  const max = words[0][1], min = words[words.length-1][1];
+  const scale = d3.scaleSqrt().domain([min,max]).range([Math.max(11, W/70), Math.min(W/6.5, H/4.2)]);
+  const tones = ['--flame-text','--violet','--ink','--ink-2'];
+  const data = words.map(([text,v],i)=>({text, v, size:scale(v), tone: i<6 ? '--flame-text' : tones[Math.floor(rng()*tones.length)]}));
+  d3.layout.cloud().size([W,H]).words(data).padding(3)
+    .rotate(()=> rng()<0.18 ? -90 : 0).font('Young Serif').fontSize(d=>d.size).random(rng)
+    .on('end', placed => {
+      cloudEl.innerHTML = '';
+      const svg = d3.select(cloudEl).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('aria-hidden','true');
+      svg.append('g').attr('transform',`translate(${W/2},${H/2})`).selectAll('text').data(placed).enter().append('text')
+        .attr('text-anchor','middle').attr('font-family','"Young Serif", Georgia, serif')
+        .attr('font-size',d=>d.size+'px').attr('fill',d=>`var(${d.tone})`)
+        .attr('transform',d=>`translate(${d.x},${d.y}) rotate(${d.rotate})`).text(d=>d.text)
+        .on('mouseenter',(e,d)=>showTip(e,wordTip(d.text))).on('mousemove',moveTip).on('mouseleave',hideTip);
+    }).start();
+}
+document.querySelectorAll('input[name=cn]').forEach(r=>r.addEventListener('change',e=>{cloudN=+e.target.value; seed=1; drawCloud();}));
+$('shuffle').addEventListener('click',()=>{ seed = Math.floor(Math.random()*1e6)+2; drawCloud(); });
+let rt; addEventListener('resize',()=>{clearTimeout(rt); rt=setTimeout(drawCloud,200);});
+if (document.fonts && document.fonts.load) document.fonts.load('20px "Young Serif"').then(drawCloud, drawCloud); else drawCloud();
+
+/* bars helper */
+function bars(el, rows, tipFn){
+  const max = Math.max(...rows.map(r=>r[1]));
+  el.innerHTML = rows.map(([l,v])=>`<div class="bar" data-w="${esc(l)}"><span class="lbl" title="${esc(l)}">${esc(l)}</span><div class="track"><div class="fill" style="width:${(v/max*100).toFixed(1)}%"></div></div><span class="v">${fmt(v)}</span></div>`).join('');
+  if (tipFn) el.querySelectorAll('.bar').forEach(b=>{ b.addEventListener('mouseenter',e=>showTip(e,tipFn(b.dataset.w))); b.addEventListener('mousemove',moveTip); b.addEventListener('mouseleave',hideTip); });
+}
+bars($('topBars'), S.words.slice(0,20), w=>wordTip(w));
+
+/* phrases */
+// Phrase lists come pre-filtered from scripts/word-stats.mjs (see PHRASE_SKIP there).
+function chips(el, rows, n, cls){
+  el.innerHTML = rows.slice(0,n).map(([p,v],i)=>`<span class="chip ${i<3?cls:''}">${esc(p)}<i>${v}</i></span>`).join('');
+}
+chips($('bigrams'), S.bigrams, 12, 'hot');
+chips($('trigrams'), S.trigrams, 12, 'cool');
+
+/* fill in the blank */
+const blankSets = {
+  spirit: {pre:'Spirit of', rows: S.spiritOf, unit:'times'},
+  maywe:  {pre:'May we', rows: S.mayWe, unit:'times'}
+};
+let bKey='spirit', bIdx=0;
+function renderBlank(){
+  const set = blankSets[bKey], [w,c] = set.rows[bIdx];
+  $('b1pre').textContent = set.pre;
+  const slot = $('b1slot'); slot.style.opacity = 0;
+  setTimeout(()=>{ slot.textContent = w + (bKey==='maywe' ? '…' : ''); slot.style.opacity = 1; }, 120);
+  $('b1cnt').textContent = `#${bIdx+1} answer · ${c} ${set.unit}`;
+  $('b1swap').textContent = bKey==='spirit' ? 'Try “May we ___”' : 'Try “Spirit of ___”';
+  bars($('blankBars'), set.rows.map(([w,c])=>['…'+w, c]));
+}
+$('b1next').addEventListener('click',()=>{ bIdx = (bIdx+1) % blankSets[bKey].rows.length; renderBlank(); });
+$('b1swap').addEventListener('click',()=>{ bKey = bKey==='spirit' ? 'maywe' : 'spirit'; bIdx=0; renderBlank(); });
+renderBlank();
+
+/* duels */
+$('duels').innerHTML = S.duels.map(([a,av,b,bv])=>{
+  const t=av+bv;
+  return `<div class="duel"><div class="names"><span><b>${a}</b> <span class="num">${fmt(av)}</span></span><span><span class="num">${fmt(bv)}</span> <b>${b}</b></span></div>
+  <div class="rail" role="img" aria-label="${a} ${av}, ${b} ${bv}"><div class="l" style="flex:${av}"></div><div class="r" style="flex:${bv}"></div></div></div>`;
+}).join('');
+
+/* pronoun stack */
+const pr = S.pron;
+const groups = [
+  ['I · me · my', pr.i+pr.me+pr.my, 'var(--flame)'],
+  ['we · us · our', pr.we+pr.us+pr.our, 'var(--violet)'],
+  ['you · your', pr.you+pr.your, 'var(--ink-3)'],
+];
+const gt = groups.reduce((s,g)=>s+g[1],0);
+$('stack').innerHTML = groups.map(([l,v,c])=>`<div style="flex:${v};background:${c}" title="${l}: ${fmt(v)}">${pct(v,gt)}</div>`).join('');
+$('stackLegend').innerHTML = groups.map(([l,v,c])=>`<span style="--c:${c}">${l} <b class="num">${fmt(v)}</b></span>`).join('');
+
+/* types */
+const T = S.types.filter(([t])=>S.distinctive[t] && S.distinctive[t].length); const tmax = T[0][1];
+$('types').innerHTML = T.map(([t,v])=>`<div class="type"><span class="tn">${esc(t)}<i>${v}</i></span><div class="track"><div class="fill" style="width:${(v/tmax*100).toFixed(1)}%"></div></div><span class="sig">${S.distinctive[t].map(esc).join(' · ')}</span></div>`).join('');
+
+/* authors + tags */
+bars($('authors'), S.authors.slice(0,8));
+const tg = S.tags.slice(0,14); const tgmax = tg[0][1];
+$('tags').innerHTML = tg.map(([t,v])=>`<span class="chip${v/tgmax>.6?' cool':''}">${esc(t)}<i>${v}</i></span>`).join('');
+
+/* facts */
+$('fLong').textContent = '“' + S.longest.title + '”';
+$('fLongSub').textContent = fmt(S.longest.words) + ' words · a ' + S.longest.type.toLowerCase();
+$('fAmenSub').textContent = 'about one in ' + Math.round(S.n / S.amen);
+$('fLoveSub').textContent = pct(loveDocs, S.n) + ' of the library';
+$('fAmen').textContent = fmt(S.amen);
+$('fLove').textContent = fmt(loveDocs);
+$('fAuth').textContent = S.authors[0][0];
+$('fAuthSub').textContent = S.authors[0][1] + ' readings in the library';
+
+/* lookup */
+const ranked = Object.entries(LK).sort((a,b)=>b[1][0]-a[1][0]);
+const rankOf = {}; ranked.forEach(([w],i)=>rankOf[w]=i+1);
+const stop = new Set(['the','and','of','to','a','in','is','it','that','we','i','you','our','my','for','with','be','are','this','as','on','not','but','all','at','by','from','or','us','so','will','can','one']);
+function lookup(){
+  const w = $('q').value.trim().toLowerCase().replace(/[’]/g,"'").replace(/[^a-z']/g,'');
+  const el = $('res');
+  if (!w){ el.innerHTML = '<span>Start typing to search.</span>'; return; }
+  if (stop.has(w)){ el.innerHTML = `<b>${esc(w)}</b>That’s one of the filler words left out of the count. It’s everywhere.`; return; }
+  const r = LK[w];
+  if (!r){ el.innerHTML = `<b>${esc(w)}</b>Not in there, or used fewer than three times. Room for a new reading?`; return; }
+  const share = r[1]/S.n*100;
+  el.innerHTML = `<b>${fmt(r[0])}×</b>“${esc(w)}” appears ${fmt(r[0])} times across ${fmt(r[1])} readings. It ranks #${fmt(rankOf[w])} of ${fmt(ranked.length)} words.
+    <div class="meter" title="${share.toFixed(1)}% of readings"><div style="width:${Math.max(share,0.6)}%"></div></div><span class="eyebrow" style="display:block;margin-top:6px">${share<1?share.toFixed(1):Math.round(share)}% of readings use it</span>`;
+}
+$('q').addEventListener('input', lookup);
+$('suggest').innerHTML = ['chalice','candle','coffee','dog','stars','grace','music'].map(w=>`<button type="button" data-w="${w}">${w}</button>`).join('');
+$('suggest').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b){ $('q').value=b.dataset.w; lookup(); }});
+lookup();
+</script>

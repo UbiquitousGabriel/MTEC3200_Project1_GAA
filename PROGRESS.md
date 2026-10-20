@@ -19,6 +19,14 @@ Milestones refer to `PRD.md`.
 
 ## Log
 
+### 2026-10-20: Word Atlas (side project)
+
+- Idea: the library is also a dataset, so I made a one-page visual of the words the readings use most. Not part of the website.
+- Added `scripts/word-stats.mjs` (`npm run stats`). It reads `data/uua-readings-raw.json` and writes `docs/word-atlas/stats.json` and `docs/word-atlas/index.html`. The page layout lives in `scripts/word-atlas.template.html`.
+- Shows: word cloud, top 20 words, common phrases, "Spirit of ___" / "May we ___" endings, word duels (love vs. fear, etc.), I vs. we, reading types with signature words, top authors and tags, and a word lookup.
+- Filler words are skipped, phrases count once per reading, and the few phrases dropped (book titles and citations) are listed in the script.
+- Results: 373,688 words, 18,871 different words. Top word is "love" (1,483 uses, in 46% of readings).
+
 ### 2026-10-20: Project reflection
 
 - Added `reflection.md` at the repo root: how I built it, three AI examples, problems I hit, and improvements for the future.
